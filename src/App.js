@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 function App() {
   const [name, setName] = useState("");
-  const [ETHAddress, setETHAddress] = useState("")
+
   var regex_first_occurrence = new RegExp('0x[a-fA-F0-9]{40}(?![a-fA-F0-9])');  
   var regex_all_occurrences = new RegExp('0x[a-fA-F0-9]{40}(?![a-fA-F0-9])', 'g');  
 
@@ -20,7 +20,10 @@ function App() {
   function findAllEthereumAddress(description) {
     var addresses;
     addresses = description.match(regex_all_occurrences);
-    addresses = addresses ? addresses.join('\n') : "no match";
+    if (!addresses) {
+      addresses = []
+    }
+    addresses = [...new Set(addresses)]
     return addresses
   }
 
@@ -29,18 +32,17 @@ function App() {
       <body className="App-header">
       <textarea
         type="text"
-        pattern="[0-9]"
         id="eth-address-first-occurrence"
         className="textarea input__lg"
-        name="eth_adress"
-        autoComplete="on"
-        style={{width:"20%"}}
+        name="eth_address"
+        style={{width:"40%"}}
         onChange={handleNameChange}
       />
       Matching first occurrence:
       <p> {findFirstEthereumAddress(name)} </p>
-      Match all occurrences:
-      <p> {findAllEthereumAddress(name)} </p>
+      Number of unique matches: {findAllEthereumAddress(name).length}
+      {findAllEthereumAddress(name).map((item, index) => <p key={index}>{item}</p>)}
+      {console.log(findAllEthereumAddress(name).join('\n'))}
 
       </body>
 
